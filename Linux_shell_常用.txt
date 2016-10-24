@@ -1,0 +1,275 @@
+Linux 常用工具：
+
+enca: http://dl.cihar.com/enca/   文件名編碼轉換
+iconv:  文件編碼轉換
+convmv: 文件名編碼轉換
+ldd:    查看可執行文件或動態鏈接庫的依賴庫
+getconf: 查看配置信息（如getconf LONG_BIT可知當前系統是32位還是64位版本）
+tcpdump: 監視網絡服務
+sync:     將緩衝區內容寫入磁盤    echo 3 > /proc/sys/vm/drop_caches: 手動釋放緩存
+man:    文檔
+
+man [章節號] 手冊名稱
+1、Standard commands （標準命令）
+2、System calls （系統調用）
+3、Library functions （庫函數）
+4、Special devices （設備說明）
+5、File formats （文件格式）
+6、Games and toys （遊戲和娛樂）
+7、Miscellaneous （雜項）
+8、Administrative Commands （管理員命令）
+
+export $ENV_VAR:/usr/bin (環境變量)
+PATH (可執行文件目錄)
+LD_LIBRARY_PATH (C/C++庫文件目錄)
+
+/etc/ld.so.conf (C/C++ 庫文件目錄表)
+
+uptime: 系統1分鐘、5分鐘和15分鐘的系統平均負載
+free:   內存使用情況
+iostat: 磁盤IO使用情況
+pidstat: 查看進程狀態
+ipcs:   查看共享內存、消息、信號量信息，如：ipcs -m 共享內存
+nm:     查看二進制的符號列表
+objdump –CS –l [bin文件]: 不反人類的反編譯
+strace:
+yumdownloader: 下載RPM軟件包(需安裝yum-utils)
+常用命令及快捷鍵：
+
+ps -aux:                              查看進程信息
+ps -o majflt minflt -C [command name] 來查看進程的majflt, minflt的值(壓力測試時使用)
+netstat  -tuanp:                      查看進程佔用端口
+netstat -aep:                         查看所有佔用的網絡端口信息
+Ctrl+r :                              最近歷史命令
+!                                     匹配最近歷史
+cd – :                                上一次訪問的目錄
+Ctrl + u 和 Ctrl + y:                 刪除當前行，恢復刪除的行
+Ctrl + c :                            換行重新輸入命令
+Ctrl + d :                            某些程序的中斷命令
+lsof: 查看被打開的文件（該指令可用於查找標記刪除但未被真正刪除的文件[會被標記為 deleted ], 詳見 http://www.ibm.com/developerworks/cn/aix/library/au-lsof.html ）
+字符串操作：
+
+1. #, 刪除左邊第一個匹配串，保留右邊字符串
+2. ##, 刪除左邊最後一個匹配串，保留右邊字符串
+3. %, 刪除右邊第一個匹配串，保留左邊字符串
+4. %, 刪除右邊最後一個匹配串，保留左邊字符串
+5. :0:N, 保留左邊第一個字符起的N個字符
+6. :X 保留左邊第X個字符起的N個字符
+7. :0-X:N, 保留右邊第X個字符起的N個字符
+8. :0-X, 保留左邊第一個字符起的N個字符
+9. /a/b 用b替換第一個出現的a
+10. //a/b 用b替換所有出現的a
+11. /#a/b 用b替換前綴a
+12. /%a/b 用b替換後綴a
+
+var="http://www.owent.net"
+echo ${var#*/}		# 刪除var左邊第一個*/後的內容 		(/www.owent/net)
+echo ${var##*/}		# 刪除var左邊最後一個*/後的內容 	(www.woent.net)
+echo ${var%/*}		# 刪除var右邊第一個/*後的內容 		(http:/)
+echo ${var%%/*}		# 刪除var右邊最後一個/*後的內容 	(http:)
+echo ${var:0:5}		# 保留var左邊第一個字符起的5個字符 	(http:)
+echo ${var:7}		# 截取var第7到結尾的字符串 		(www.owent.net)
+echo ${var:0-5:3}	# 保留var右邊第5個字符起的3個字符 	(t.n)
+echo ${var:0-5}		# 截取var最後5個字符 			(t.net)
+echo ${var/www/api}	# 把第一個www替換為api 			(http://api.owent.net)
+echo ${var//e/f}		# 把所有www替換為api 			(http://www.owfnt.nft)
+echo ${var/#http/https}	# 把http前綴替換為https 		(https://www.owent.net)
+echo ${var/%net/com}	# 把net後綴替換為com 			(http://www.owent.com)
+
+系統信息(IP等)：
+
+MAC地址： /sbin/ifconfig eth1 2> /dev/null | grep 'HWaddr' | awk '{print $5}'
+IP地址：/sbin/ifconfig eth1 2> /dev/null | grep 'inet addr' | awk '{print $2}' | cut -d: -f2
+子網掩碼：/sbin/ifconfig eth1 2> /dev/null | grep 'Mask' | cut -d: -f4
+/tmp/resolv.conf.auto 2> /dev/null | grep 'nameserver' | awk '{print $2}'#
+系統運行時間：/bin/cat /proc/uptime 2> /dev/null | awk -F. '{run_days=$1 / 86400;run_hour=($1 % 86400)/3600;run_minute=($1 % 3600)/60;run_second=$1 % 60;printf("%d天%d時%d分%d秒",run_days,run_hour,run_minute,run_second)}'
+共發出數據包：/sbin/ifconfig eth0 2> /dev/null | grep 'TX packets' | awk '{print $2}'|cut -d: -f2
+共接受數據包：/sbin/ifconfig eth0 2> /dev/null | grep 'RX packets' | awk '{print $2}'|cut -d: -f2
+
+使Linux腳本或者命令輸出的結果不換行（在網頁中應用較多）
+echo -e "`ifconfig eth0 2> /dev/null | grep 'inet addr' | awk '{print $2}' | cut -d: -f2`\c"
+
+用硬件檢測程序kuduz探測新硬件：service kudzu start ( or restart)
+dmesg (查看所有啟動時檢測到的硬件信息)
+lspci (顯示外設信息, 如usb，網卡等信息)
+cat /etc/sysconfig/hwconf
+mpstat
+查看PCI設備：lspci
+查看USB設備：lsusb -v
+查看網卡狀態：sudo ethtool eth0
+查看CPU信息：cat /proc/cpuinfo 或 lscpu
+顯示當前硬件信息：sudo lshw
+全面的顯示bios、cpu、內存等硬件信息：dmidecode
+
+特殊文件：
+
+網絡名稱： /etc/sysconfig/network
+網卡： /etc/sysconfig/network-scripts/*
+網卡信息緩存: /etc/udev/rules.d/70-persistent-net.rules
+KVM和網絡配置：
+
+virsh：虛擬機管理
+virt-install：虛擬機安裝
+# 建議還是搞個GUI工具，然後可以連接上只有命令行的宿主機管理，會方便的多。比如虛擬機裡搞個GUI版本的Linux，遠程連接到宿主機上。
+
+# CentOS的網絡管理是NetworkManager和原來的network.service並存，並且NetworkManager先啟動。
+brctl：網橋管理nmcli：NetworkManager的命令行工具
+nmtui：NetworkManager的TUI工具（和GUI比較像了）
+
+# Linux的KVM虛擬機默認是NAT網絡，如果需要使用網橋可以先用brctl或者nmcli或者nmtui把virbr0網橋刪了
+# 然後再用nmcli或者nmtui添加網橋，最後把原來的網絡連接橋接上來即可。
+
+# 其他的網絡防火牆方面的記在《關於firewalld和systemd的一些命令速記》
+Bash：
+
+umask: 默認創建文件的權限（取反）
+export: 申明為環境變量
+
+/etc/hosts: hosts文件
+/etc/profile : 登入後執行腳本
+~/.bash_login : 同上，限定用戶
+~/.bash_profile : 同上
+~/.profile : 同上
+~用戶名 : 用戶Home目錄
+
+~/.bash_history: 命令歷史記錄
+Vim：
+
+命令行模式
+/ 向下搜索
+? 向上搜索
+
+v 進入可視化模式   V 可視化模式中進入行
+i 光標處插入 I 行首插入 o 換行插入 O 前行插入
+a 光標後插入 A 行尾插入
+s 替換 S 替換行
+w 下一個單詞頭 e 下一個單詞尾
+b 前一個單詞
+d 剪切 D 剪切到行尾
+dd 剪切行 dw剪切單詞
+yy 複製一行
+p 粘貼
+c 刪除並轉到編輯模式  C 刪到行尾並轉為編輯模式
+x 向後刪除 X 向前刪除
+n 下一個搜索項 N 上一個搜索項
+u 取消修改 U 取消當前行的修改
+文本替換：
+
+:[搜索規則][分隔符][原匹配式][分隔符][替換目標][分隔符][替換規則]
+分隔符可以是/,+和#
+搜索規則
+
+:n,$s/從第n行到結尾，類似正則表達式
+:%s/ 全文搜索
+
+替換規則
+
+/g 全行替換
+
+如：
+:s/src/dst/  文本替換(當前行第一個src替換為dst)
+:s/src/dst/g 文本替換(當前行所有src替換為dst)
+:%s/src/dst/g 文本替換(所有行第一個src替換為dst)
+:%s/src/dst/g 文本替換(所有行所有src替換為dst)
+分屏
+
+:He 上分屏瀏覽 :He! 下分屏瀏覽
+:Ve 左分屏瀏覽 :Ve! 右分屏瀏覽
+Ctrl+w 分屏切換
+:set scb 分屏同步移動 :set scb! 解除分屏同步移動
+:E 目錄導航
+:split/vsplit 分屏/垂直分屏打開
+ctrl-w 上/下/左/右 切換到上/下/左/右窗口
+ctrl-w ctrl-w 切換到下一個窗口
+ctrl-w_  最大化當前窗口
+ctrl-w= 所有窗口設為相同大小
+:hide 隱藏當前窗口
+:­nly 關閉當前窗口外的所有窗口
+:b N 打開窗口N
+關鍵字導航
+
+Ctrl+N 向下查找關鍵字關鍵字[插入模式下]， Ctrl+P 向上查找關鍵字[插入模式下]
+Ctrl + X 和 Ctrl + D 宏定義補齊
+Ctrl + X 和 Ctrl + ] 是 Tag 補齊
+Ctrl + X 和 Ctrl + F 是文件名補齊
+Ctrl + X 和 Ctrl + I 也是關鍵詞補齊，但是關鍵後會有個文件名，告訴你這個關鍵詞在哪個文件中
+Ctrl + X 和 Ctrl +V 是表達式補齊
+Ctrl + X 和 Ctrl +L 對整行補齊。
+字符相關
+
+【guu 】 – 把一行的文字變成全小寫。或是【Vu】
+【gUU】 – 把一行的文件變成全大寫。或是【VU】
+按【v】鍵進入選擇模式，然後移動光標選擇你要的文本，按【u】轉小寫，按【U】轉大寫
+【ga】 –  查看光標處字符的 ascii 碼
+【g8】 – 查看光標處字符的 utf-8 編碼
+【gf】  – 打開光標處所指的文件 （這個命令在打到#include 頭文件時挺好用的，當然，僅限於有路徑的）
+【*】或【#】在當前文件中搜索當前光標的單詞
+縮進相關
+
+【>>】向右給它進當前行 【<<】向左縮進當前行
+【=】  – 縮進當前行 （和上面不一樣的是，它會對齊縮進）
+【=%】 – 把光標位置移到語句塊的括號上，然後按=%，縮進整個語句塊（%是括號匹配）
+【G=gg】 或是 【gg=G】  – 縮進整個文件（G是到文件結尾，gg 是到文件開頭）
+:set autoindent/noautoindent 自動縮進
+:set smartindent/nosmartindent 智能縮進
+:set tabstop=4 製表符長度為4
+:set shiftwidth=4 縮進符為長度為4的空格
+ctrl-t, ctrl-d 插入模式的縮進和取消縮進
+>> 縮進
+<< 取消縮進
+文件系統
+
+:e . 打開文件目錄
+:Sex 分割窗口並開啟文件目錄
+:ls List buffers
+:cd ..
+:args 查看文件列表
+:args * 批量打開文件
+:grep
+gf 打開光標指向的文件
+Windows PowerShell：
+MS的審美真實與眾不同啊，我使用Windows PowerShell干的第一件事就是開管理員模式進然後該背景顏色
+然後，設置允許執行腳本文件
+Set-ExecutionPolicy Unrestricted
+Set-ExecutionPolicy RemoteSigned
+
+然後安裝Cygwin或MinGW的MSYS，還是用POSIX命令集吧
+編譯器命令：
+
+gcc -dM -E - < /dev/null # GCC查看 預定義宏
+cpp -dM  < /dev/null # GCC查看 預定義宏
+cc -v fred.c # HP-UX ansi C compiler 查看 預定義宏
+cc -## fred.c  # SCO OpenServer C compiler 和 Sun Studio C/C++ compiler 查看 預定義宏
+cc -qshowmacros -E fred.c # IBM AIX XL C/C++ compiler 查看 預定義宏
+clang -dM -E - < /dev/null # Clang 查看 預定義宏
+# VC 查看 預定義宏，查文檔吧 http://msdn.microsoft.com/en-us/library/b0084kay(v=vs.110).aspx
+
+Linux查看系統信息命令
+
+工具查詢地址: http://bhami.com/rosetta.html
+最後記錄一下我常用的軟件包:
+Posix環境:
+
+tar zip unzip gzip lzip zlib binutils gcc gdb cmake subversion git make colorgcc colordiff diffutils automake texinfo curl wget ncurses libncurses bison rsync uuid-devel valgrind telnet cppcheck openssl-devel
+開發工具&庫:
+
+openssl-devel readline-devel ncurses-devel libunwind-devel python php-cli java-1.8.0-openjdk
+Linux專用:
+
+yum-remove-with-leaves yum-download bleachbit yum-plugin-fastestmirror dstat sar ipcalc iotop htop atop iptraf rtorrent aria2 p7zip
+Linux – LLVM – Clang 套件:
+
+llvm clang dragonegg lldb
+Linux桌面:
+
+cinnamon gnome-tweak-tool numix-gtk-theme
+imsettings-cinnamon  ： 用於切換系統輸入法
+小工具:
+
+figlet
+編輯工具:
+
+pandoc ctex/miktex
+圖像處理：
+
+gimg darktable GraphicsMagick
