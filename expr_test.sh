@@ -17,4 +17,9 @@ echo -n "num1 % num2 = "
 expr $num1 % $num2
 
 
+result=
+result=`expr $num1 \* $num2 + 3`
+echo "result = $result"
+
+
 exit 0
