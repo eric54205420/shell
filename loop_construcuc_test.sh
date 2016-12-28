@@ -25,6 +25,7 @@ do
 done
 IFS=$OLDIFS
 
+
 echo "==============="
 echo "Do by while-loop"
 echo "==============="
@@ -45,3 +46,8 @@ while read line
 do
     echo $line
 done < $0
+
+
+
+
+exit 0
