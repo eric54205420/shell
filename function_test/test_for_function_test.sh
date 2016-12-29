@@ -2,4 +2,7 @@
 
 source function_test.sh
 
-function
+echo_message "Test for function_test"
+
+
+exit 0
